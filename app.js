@@ -12,6 +12,8 @@ const moment = require("moment");
 
 const app = express();
 
+require("dotenv").config();
+
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
@@ -30,7 +32,7 @@ app.use(
       secure: true,
       maxAge: 60000,
     },
-    store: MongoStore.create(options),
+    store: MongoStore.create({mongUrl: process.env.DB_URI}),
     secret: "secret",
     saveUninitialized: true,
     resave: false,
@@ -49,7 +51,6 @@ app.use(passport.session());
 
 const port = process.env.PORT || 3000;
 
-require("dotenv").config();
 // set the view engine to ejs
 app.set("view engine", "ejs");
 // app.use(expressLayouts);
