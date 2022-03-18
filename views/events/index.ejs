@@ -1,0 +1,33 @@
+<%- include('../partials/header'); %> 
+<%- include('../partials/navbar'); %>
+
+<div class="container" style="width: 80%;" >
+
+  <%- include('../partials/_add_btn') %>
+      <%- include('../partials/flashMessages.ejs'); %> 
+    
+  
+ 
+  <% chunk.forEach((events) => { %>
+  <div class="row mt-4">
+    <% events.forEach((event) => { %>
+    <div class="col-sm-6 col-md-4">
+      <div class="card" style="width: 18rem">
+        <div class="card-body">
+          <h5 class="card-title"><%= event.title %></h5>
+          <p class="card-text"><%= event.description.substring(0, 80)+"..." %></p>
+          <p><%= event.location %></p>
+          <span class="badge badge-secondary">
+            <%= moment(event.date).format( 'MMM-DD-YYYY') %>
+          </span>
+          <a href="/events/show/<%= event.id %>" class="btn btn-primary">Show more...</a>
+        </div>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+  <% }) %>
+
+</div>
+
+<%- include('../partials/footer'); %>

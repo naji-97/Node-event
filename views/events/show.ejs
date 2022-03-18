@@ -1,0 +1,31 @@
+<%- include('../partials/header'); %> <%- include('../partials/navbar'); %>
+
+<div class="container">
+  <div class="row mt-4">
+    <div class="col-md-9 offset-md-1">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title"><%=event.title %></h5>
+          <hr />
+          <p class="card-text"><%=event.description%></p>
+          <p><%=event.location%></p>
+          <p>
+            <span class="badge badge-secondary"><%= moment(event.date).format( 'MMM-DD-YYYY') %></span
+          </p>
+
+          <% if (user && user.id == event.userId) { %>
+          <a href="/events/edit/<%= event.id %> " class="btn btn-primary"
+            ><i class="fas fa-edit"></i></a
+          >
+          <a href="/events/delete/<%= event.id %>" class="btn btn red btn-float"
+            ><i class="fas fa-trash"></i></a
+          >
+
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--  -->
+<%- include('../partials/footer'); %>
