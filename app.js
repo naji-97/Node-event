@@ -4,15 +4,23 @@ const mongoose = require("mongoose");
 const db = require("./config/database");
 const bodyParser = require("body-parser");
 const flash = require("connect-flash");
-var session = require("cookie-session");
-const MongoStore = require('connect-mongo')(session);
-const passport = require("passport");
+const session = require('express-session');
+const MongoStore = require('connect-mongodb-session')(session)
 const moment = require("moment");
+const passport = require('passport')
 // var expressLayouts = require('express-ejs-layouts');
 
 const app = express();
 
 require("dotenv").config();
+
+
+// Connect mongoose
+mongoose.connect(process.env.DB_URI, 
+  {useNewUrlParser: true}
+  )
+.then(()=>console.log('connect to db success'))
+.catch(err=>console.log(err))
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -26,18 +34,39 @@ app.use(flash());
 //-momery unleaked---------
 app.set("trust proxy", 1);
 
+// app.use(
+//   session({
+//     cookie: {
+//       secure: true,
+//       maxAge: 60000,
+    
+//     store: MongoStore.create({mongUrl: process.env.DB_URI}),
+//     secret: "secret",
+//     saveUninitialized: true,
+//     resave: false,
+//   },
+//   })
+// );
+
+const store = new MongoStore({
+  uri: process.env.DB_URI,
+  databaseName: 'chatter',
+  collection: 'sessions',
+})
+
+store.on('error', err => {
+  throw new Error(err)
+})
+
 app.use(
   session({
-    cookie: {
-      secure: true,
-      maxAge: 60000,
-    },
-    store: MongoStore.create({mongUrl: process.env.DB_URI}),
-    secret: "secret",
-    saveUninitialized: true,
-    resave: false,
-  })
-);
+      secret: 's3cr3tK3y',
+      store: store,
+      resave: false,
+      saveUninitialized: false,
+  }),
+)
+
 
 app.use(function (req, res, next) {
   if (!req.session) {
@@ -49,7 +78,7 @@ app.use(function (req, res, next) {
 app.use(passport.initialize());
 app.use(passport.session());
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 
 // set the view engine to ejs
 app.set("view engine", "ejs");
