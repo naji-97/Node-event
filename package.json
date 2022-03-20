@@ -4,7 +4,7 @@
   "description": "full project with node",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "node app.js"
   },
   "author": "naji",
   "license": "ISC",
